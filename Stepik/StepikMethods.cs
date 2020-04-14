@@ -10,7 +10,7 @@ namespace Stepik
 {
     public static class StepikMethods
     {
-        private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page=1&query={1}&type=course";
+        private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page=1&query={0}&type=course";
         /// <summary>
         /// Курсы с первой страницы по запросу
         /// </summary>
@@ -22,15 +22,41 @@ namespace Stepik
             MainDataController newPageOfData = JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search, keyword)));
             if (newPageOfData.IsFound)
                 return newPageOfData.search_results;
-            return new List<StepikCourse>();
+            return null;
         }
-       
+
         /// <summary>
         /// Получает страницу по ссылке
         /// </summary>
         /// <param name="url">Ссылка на страницу</param>
         /// <returns>Строка с информацией</returns>
         private static string GetSource(string url)
-            => new WebClient().DownloadString(url);
+        {
+            try
+            {
+                return new WebClient().DownloadString(url);
+            }
+            catch (WebException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Метод возвращающий детали о курсе
+        /// </summary>
+        /// <param name="link">ссылка на страницу для парсинга</param>
+        /// <returns>Объект с соответсвующей информацией</returns>
+        public static StepikCourseDetails GetDetails(string link)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<DetailsDataController>(GetSource(link))?.info[0];
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
     }
 }

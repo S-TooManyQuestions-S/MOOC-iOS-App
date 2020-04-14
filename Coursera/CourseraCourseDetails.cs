@@ -10,6 +10,6 @@ namespace Coursera
         public CourseraCourseDetails(string summary, string workload, string target_audience, string course_format, string description)
            : base(summary, workload, target_audience, course_format,description) //DescriptionFix(description))
         { }
-        //сделать
+        
     }
 }

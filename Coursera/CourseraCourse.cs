@@ -12,5 +12,6 @@ namespace Coursera
             :base(name,new Rating(localrating),new Image(course_cover, logoPath), new CurrentInfo("Coursera",0,detailsPath))
             { }
         private static string logoPath = "https://www.whizsky.com/wp-content/uploads/2015/02/Coursera-Education-website-in-India-1068x1068.png";
+        
     }
 }
