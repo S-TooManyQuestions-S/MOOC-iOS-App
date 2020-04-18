@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MOOC_Server.MySettings;
 
 namespace MOOC_Server
 {
@@ -25,7 +26,8 @@ namespace MOOC_Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddMvc();
+            services.AddSingleton<IServerRepository, ServerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

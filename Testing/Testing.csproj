@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,7 +7,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Coursera\Coursera.csproj" />
+    <ProjectReference Include="..\MySQL\MySQL.csproj" />
     <ProjectReference Include="..\Stepik\Stepik.csproj" />
+    <ProjectReference Include="..\Udemy\Udemy.csproj" />
   </ItemGroup>
 
 </Project>

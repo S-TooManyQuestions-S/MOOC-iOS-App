@@ -34,7 +34,6 @@ namespace Coursera
 
         }
 
-
         /// <summary>
         /// Получить курсы по ключевому слову
         /// </summary>
@@ -46,7 +45,7 @@ namespace Coursera
             var searchPage = LoadPage(course_search + keyword);
 
             if (searchPage == null)//если есть ошибка чтения страницы - объект создаваться не будет
-                return null;
+                return listOfCourses;
 
             List<string> ratings = GetValueInfo(searchPage, "span", "ratings-text");
 
@@ -88,11 +87,6 @@ namespace Coursera
             {
                 return null;
             }
-            catch (Exception)
-            {
-                return null;
-            }
-
         }
         /// <summary>
         /// Получить информацию из значения узла (с классом)
@@ -101,7 +95,7 @@ namespace Coursera
         /// <param name="selector">тег для выбора</param>
         /// <param name="className">конкретизация тега именем класса</param>
         /// <returns>Список информации</returns>
-        public static List<string> GetValueInfo(IHtmlDocument doc, string selector, string className)
+        private static List<string> GetValueInfo(IHtmlDocument doc, string selector, string className)
         {
             try
             {
@@ -115,21 +109,19 @@ namespace Coursera
             {
                 return null;
             }
-            catch (Exception)
-            {
-                return null;
-            }
         }
 
-        public static string GetValueInfo(IHtmlDocument doc, string selector)
+        private static string GetValueInfo(IHtmlDocument doc, string selector)
         => doc.QuerySelector(selector).TextContent;
 
 
 
         public static CourseraCourseDetails GetDetails(string url)
         {
-            IHtmlDocument doc = CourseraMethods.LoadPage("https://www.coursera.org/learn/data-visualization-tableau");
-            return new CourseraCourseDetails(GetSummary(doc), GetWorkLoad(doc), GetCourseRecommendations(doc), GetCourseFormat(doc), GetDescription(doc)); 
+            IHtmlDocument doc = CourseraMethods.LoadPage(url);
+           /* if (description == "None" && summary == "None" && workload == "None" && recom == "None" && format == "None")
+                return null;*/
+            return new CourseraCourseDetails(GetSummary(doc), GetWorkLoad(doc), GetCourseRecommendations(doc), GetCourseFormat(doc), GetDescription(doc));
         }
 
         /// <summary>
@@ -138,7 +130,7 @@ namespace Coursera
         /// </summary>
         /// <param name="doc"></param>
         /// <returns></returns>
-        public static string GetCourseRecommendations(IHtmlDocument doc)
+        private static string GetCourseRecommendations(IHtmlDocument doc)
         {
             try
             {
@@ -147,11 +139,7 @@ namespace Coursera
             }
             catch (NullReferenceException)
             {
-                return "Дополнительных знаний не требуется";
-            }
-            catch (Exception)
-            {
-                return "Дополнительных знаний не требуется";
+                return "None";
             }
         }
 
@@ -160,7 +148,7 @@ namespace Coursera
         /// </summary>
         /// <param name="doc">страница</param>
         /// <returns>Строка краткой информации о курсе</returns>
-        public static string GetSummary(IHtmlDocument doc)
+        private static string GetSummary(IHtmlDocument doc)
         {
             try
             {
@@ -170,17 +158,13 @@ namespace Coursera
             {
                 return "None";
             }
-            catch (Exception)
-            {
-                return "None";
-            }
         }
         /// <summary>
         /// Получение описания курса
         /// </summary>
         /// <param name="doc">Страница курса</param>
         /// <returns>Описание (полное)</returns>
-        public static string GetDescription(IHtmlDocument doc)
+        private static string GetDescription(IHtmlDocument doc)
         {
             try
             {
@@ -188,11 +172,15 @@ namespace Coursera
             }
             catch (NullReferenceException)
             {
-                return "None";
-            }
-            catch (Exception)
-            {
-                return "None";
+                try
+                {
+                    return doc.QuerySelectorAll("div").Where(x => x.ClassName == "AboutCourse").FirstOrDefault().QuerySelectorAll("div").Where(
+                        x => x.ClassName == "content-inner").FirstOrDefault().TextContent;
+                }
+                catch (NullReferenceException)
+                {
+                    return "None";
+                }
             }
         }
         /// <summary>
@@ -200,22 +188,15 @@ namespace Coursera
         /// </summary>
         /// <param name="doc">страница курса</param>
         /// <returns>Расчет по временных затрат</returns>
-        public static string GetWorkLoad(IHtmlDocument doc)
+        private static string GetWorkLoad(IHtmlDocument doc)
         {
             try
             {
                 var m = doc.QuerySelectorAll("div").Where(x => x.ClassName == "ProductGlance").FirstOrDefault().QuerySelectorAll("div").Where(x => x.ClassName == "_y1d9czk m-b-2 p-t-1s").ToList();
-                var list =  m[m.Count - 2].QuerySelectorAll("span").ToList();
-                string workload = "";
-                foreach(var item in list)
-                    workload += item.TextContent+"\n";
-                return workload;
+                var list = m[m.Count - 2].QuerySelectorAll("span").ToList();
+                return list[0].TextContent;
             }
-            catch(NullReferenceException)
-            {
-                return "None";
-            }
-            catch(Exception)
+            catch (NullReferenceException)
             {
                 return "None";
             }
@@ -225,8 +206,7 @@ namespace Coursera
         /// </summary>
         /// <param name="doc">Страница курса</param>
         /// <returns>Формат</returns>
-
-        public static string GetCourseFormat(IHtmlDocument doc)
+        private static string GetCourseFormat(IHtmlDocument doc)
         {
             try
             {
@@ -236,11 +216,7 @@ namespace Coursera
             }
             catch (NullReferenceException)
             {
-                return "Онлайн курс";
-            }
-            catch (Exception)
-            {
-                return "Онлайн курс";
+                return "None";
             }
         }
     }

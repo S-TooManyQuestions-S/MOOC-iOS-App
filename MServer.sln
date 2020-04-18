@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MOOC_Server", "MOOC_Server\MOOC_Server.csproj", "{1C0327C3-4306-4F22-A66B-4CD4D55528C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MOOC_Server", "MOOC_Server\MOOC_Server.csproj", "{1C0327C3-4306-4F22-A66B-4CD4D55528C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseLib", "Course\CourseLib.csproj", "{2EEC5009-7796-486D-B383-FA9D0A4E43A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourseLib", "Course\CourseLib.csproj", "{2EEC5009-7796-486D-B383-FA9D0A4E43A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stepik", "Stepik\Stepik.csproj", "{FED28938-B291-4294-9861-F141EC5B4781}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stepik", "Stepik\Stepik.csproj", "{FED28938-B291-4294-9861-F141EC5B4781}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{8C7D7332-55C9-43A8-BFB2-E9B0CE1F4F5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{8C7D7332-55C9-43A8-BFB2-E9B0CE1F4F5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coursera", "Coursera\Coursera.csproj", "{DBB303D2-F9B8-4574-91C2-D61B691790E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coursera", "Coursera\Coursera.csproj", "{DBB303D2-F9B8-4574-91C2-D61B691790E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Udemy", "Udemy\Udemy.csproj", "{7269547F-AFB7-4E9B-B36D-89387B0C7D39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySQL", "MySQL\MySQL.csproj", "{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{DBB303D2-F9B8-4574-91C2-D61B691790E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBB303D2-F9B8-4574-91C2-D61B691790E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBB303D2-F9B8-4574-91C2-D61B691790E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7269547F-AFB7-4E9B-B36D-89387B0C7D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7269547F-AFB7-4E9B-B36D-89387B0C7D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7269547F-AFB7-4E9B-B36D-89387B0C7D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7269547F-AFB7-4E9B-B36D-89387B0C7D39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

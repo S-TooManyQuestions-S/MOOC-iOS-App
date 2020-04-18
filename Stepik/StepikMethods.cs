@@ -10,7 +10,7 @@ namespace Stepik
 {
     public static class StepikMethods
     {
-        private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page=1&query={0}&type=course";
+        private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page={0}&query={1}&type=course";
         /// <summary>
         /// Курсы с первой страницы по запросу
         /// </summary>
@@ -19,9 +19,16 @@ namespace Stepik
         /// <returns>Лист курсов (если курсов не было найдено - пустой список)</returns>
         public static List<StepikCourse> GetCourses(string keyword)
         {
-            MainDataController newPageOfData = JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search, keyword)));
+            MainDataController newPageOfData = JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search,1, keyword)));
             if (newPageOfData.IsFound)
-                return newPageOfData.search_results;
+                if (newPageOfData.metaresults.HasNext)
+                {
+                    var m = newPageOfData.search_results;
+                    m.AddRange(JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search, 2, keyword))).search_results);
+                    return m;
+                }
+            else
+                { return newPageOfData.search_results; }    
             return null;
         }
 

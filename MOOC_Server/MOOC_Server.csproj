@@ -4,5 +4,17 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Coursera\Coursera.csproj" />
+    <ProjectReference Include="..\Course\CourseLib.csproj" />
+    <ProjectReference Include="..\MySQL\MySQL.csproj" />
+    <ProjectReference Include="..\Stepik\Stepik.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils" Version="3.1.2" />
+  </ItemGroup>
+
 
 </Project>
