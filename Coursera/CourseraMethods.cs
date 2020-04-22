@@ -1,12 +1,12 @@
 ﻿using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
-using CourseLib.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Globalization;
+using CourseLib;
 
 namespace Coursera
 {
@@ -19,23 +19,33 @@ namespace Coursera
         /// </summary>
         /// <param name="path">Ссылка на страницу</param>
         /// <returns>Html-документ</returns>
-        public static IHtmlDocument LoadPage(string path)
+        private static IHtmlDocument LoadPage(string path)
         {
             try
             {
-                WebClient webClient = new WebClient();
-                webClient.Headers.Add("Accept-Language", "ru-ru"); //меняем язык 
-                return new HtmlParser().ParseDocument(webClient.DownloadString(path));
+                string info;
+                using (WebClient webClient = new WebClient())
+                {
+                    webClient.Headers.Add("Accept-Language", "en-us");
+                    info = webClient.DownloadString(path);
+                }
+                return new HtmlParser().ParseDocument(info);
             }
-            catch (WebException)
+            catch (WebException e)
             {
-                return null;
+                Console.WriteLine("Ошибка при загрузке страницы для парсинга![Coursera]" +
+                    "Information: Coursera \n" + e.Message);
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine("Непредвиденная ошибка при загрузке страницы для парсинга![Coursera]" +
+                    "Information: Coursera \n" + e.Message);
+            }
+            return null;
         }
 
         /// <summary>
-        /// Получить курсы по ключевому слову
+        /// 0 Получить курсы по ключевому слову
         /// </summary>
         /// <param name="keyword">ключевое слово</param>
         /// <returns>список сформированных курсов</returns>
@@ -43,26 +53,27 @@ namespace Coursera
         {
             List<CourseraCourse> listOfCourses = new List<CourseraCourse>();
             var searchPage = LoadPage(course_search + keyword);
+            if (searchPage != null)
+            {
+                List<string> ratings = GetValueInfo(searchPage, "span", "ratings-text");
+                if (ratings.Count == 0)
+                    return listOfCourses;//курсы не были найдены
 
-            if (searchPage == null)//если есть ошибка чтения страницы - объект создаваться не будет
-                return listOfCourses;
+                //ссылки на курсы
+                List<string> hrefs = GetAttributeInfo(searchPage, "a", "rc-DesktopSearchCard anchor-wrapper", 7);
+                //ссылки на обложки курсов
+                List<string> cover_photos = GetAttributeInfo(searchPage, "img", "product-photo", 0);
+                //названия курсов
+                List<string> course_names = GetValueInfo(searchPage, "h2", "color-primary-text card-title headline-1-text");
 
-            List<string> ratings = GetValueInfo(searchPage, "span", "ratings-text");
+                if (hrefs.Count == 0 || cover_photos.Count == 0 || course_names.Count == 0)
+                    return listOfCourses; //недостаточно информации для парсинга 
 
-            if (ratings.Count == 0)
-                return listOfCourses;
-
-            List<string> hrefs = GetAttributeInfo(searchPage, "a", "rc-DesktopSearchCard anchor-wrapper", 7);
-            List<string> cover_photos = GetAttributeInfo(searchPage, "img", "product-photo", 0);
-            List<string> course_names = GetValueInfo(searchPage, "h2", "color-primary-text card-title headline-1-text");
-            if (hrefs == null || cover_photos == null || course_names == null)
-                return null;
-
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            for (int i = 0; i < ratings.Count; i++)
-                listOfCourses.Add(new CourseraCourse(course_names[i], double.Parse(ratings[i]), cover_photos[i], "https://www.coursera.org" + hrefs[i]));
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
-
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+                for (int i = 0; i < ratings.Count; i++)
+                    listOfCourses.Add(new CourseraCourse(course_names[i], double.Parse(ratings[i]), cover_photos[i], "https://www.coursera.org" + hrefs[i]));
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+            }
             return listOfCourses;
         }
         /// <summary>
@@ -78,15 +89,19 @@ namespace Coursera
             List<string> context = new List<string>();
             try
             {
-                doc.QuerySelectorAll(selector).Where(x =>
-            x.ClassName != null && x.ClassName == className).ToList().ForEach(x =>
+                doc.QuerySelectorAll(selector).Where(x => x.ClassName == className).ToList().ForEach(x =>
             context.Add(x.Attributes[attribute].Value));
                 return context;
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException e)
             {
-                return null;
+                Console.WriteLine($"Ошибка при парсинге значения [Coursera] [атрибут]\n<тег>: {selector}\n<название класса>: {className}\nномер атрибута: {attribute}\n" + e.Message);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Непредвиденная ошибка при парсинге значения [Coursera] [атрибут]\n<тег>: {selector}\n<название класса>: {className}\nномер атрибута: {attribute}\n" + e.Message);
+            }
+            return context;
         }
         /// <summary>
         /// Получить информацию из значения узла (с классом)
@@ -97,35 +112,40 @@ namespace Coursera
         /// <returns>Список информации</returns>
         private static List<string> GetValueInfo(IHtmlDocument doc, string selector, string className)
         {
+            List<string> data = new List<string>();
             try
             {
-                List<string> data = new List<string>();
                 doc.QuerySelectorAll(selector).Where(x =>
                 x.ClassName != null && x.ClassName == className).ToList().ForEach(x =>
                 data.Add(x.TextContent));
                 return data;
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException e)
             {
-                return null;
+                Console.WriteLine($"Ошибка при парсинге значения [Coursera] [по значению]\n<тег>: {selector}\n<название класса>: {className}\n" + e.Message);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Непредвиденная ошибка при парсинге значения [Coursera] [по значению]\n<тег>: {selector}\n<название класса>: {className}\n" + e.Message);
+            }
+            return data;
         }
-
-        private static string GetValueInfo(IHtmlDocument doc, string selector)
-        => doc.QuerySelector(selector).TextContent;
-
-
-
+          
+        /// <summary>
+        /// ??Получение информации о конкретном курсе
+        /// </summary>
+        /// <param name="url">ссылка на курс</param>
+        /// <returns>Информация о курсе</returns>
         public static CourseraCourseDetails GetDetails(string url)
         {
-            IHtmlDocument doc = CourseraMethods.LoadPage(url);
-           /* if (description == "None" && summary == "None" && workload == "None" && recom == "None" && format == "None")
-                return null;*/
-            return new CourseraCourseDetails(GetSummary(doc), GetWorkLoad(doc), GetCourseRecommendations(doc), GetCourseFormat(doc), GetDescription(doc));
+            IHtmlDocument doc = LoadPage(url);
+            if(doc != null)
+                return new CourseraCourseDetails(GetSummary(doc), GetWorkLoad(doc), GetCourseRecommendations(doc), GetCourseFormat(doc), GetDescription(doc));
+            return null;
         }
 
         /// <summary>
-        /// Получить рекомендации по конкретному курсу 
+        /// ""Получить рекомендации по конкретному курсу 
         /// Рекомендации к уровню знаний перед выполнением
         /// </summary>
         /// <param name="doc"></param>
@@ -137,14 +157,19 @@ namespace Coursera
                 var m = doc.QuerySelectorAll("div").Where(x => x.ClassName == "_y1d9czk m-b-2 p-t-1s").ToList();
                 return (m[m.Count - 3].QuerySelectorAll("p").FirstOrDefault().TextContent);
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
-                return "None";
+                Console.WriteLine("Произошла ошибка при парсинге значения [Coursera] [значение не найдено]\n<название класса>: _y1d9czk m-b-2 p-t-1s\n"+e.Message);
             }
+            catch(Exception e)
+            {
+                Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n"+e.Message);
+            }
+            return "";
         }
 
         /// <summary>
-        /// Получить краткое описание курса, если есть
+        /// ""Получить краткое описание курса, если есть
         /// </summary>
         /// <param name="doc">страница</param>
         /// <returns>Строка краткой информации о курсе</returns>
@@ -154,13 +179,18 @@ namespace Coursera
             {
                 return doc.QuerySelectorAll("p").Where(x => x.ClassName == "max-text-width m-b-0").FirstOrDefault().TextContent;
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
-                return "None";
+                Console.WriteLine("Произошла ошибка при парсинге значения [Coursera] [значение не найдено]\n<название класса>: max-text-width m-b-0\n" + e.Message);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera]\n < название класса >: max-text-width m-b-0\n" + e.Message);
+            }
+            return "";
         }
         /// <summary>
-        /// Получение описания курса
+        /// ""Получение описания курса
         /// </summary>
         /// <param name="doc">Страница курса</param>
         /// <returns>Описание (полное)</returns>
@@ -170,21 +200,34 @@ namespace Coursera
             {
                 return doc.QuerySelectorAll("div").Where(x => x.ClassName == "description").FirstOrDefault().TextContent;
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
-                try
-                {
-                    return doc.QuerySelectorAll("div").Where(x => x.ClassName == "AboutCourse").FirstOrDefault().QuerySelectorAll("div").Where(
-                        x => x.ClassName == "content-inner").FirstOrDefault().TextContent;
-                }
-                catch (NullReferenceException)
-                {
-                    return "None";
-                }
+                Console.WriteLine("Произошла ошибка при парсинге значения [Coursera][значение не найдено]\n < название класса >: description\n" + e.Message);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera]\n < название класса >: description\n" + e.Message);
+            }
+
+            try
+            {
+                return doc.QuerySelectorAll("div").Where(x => x.ClassName == "AboutCourse").FirstOrDefault().QuerySelectorAll("div").Where(
+                    x => x.ClassName == "content-inner").FirstOrDefault().TextContent;
+            }
+            catch (NullReferenceException e)
+            {
+                Console.WriteLine("Произошла ошибка при парсинге значения [Coursera][значение не найдено]\n < название класса >: AboutCourse\n" + e.Message);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera]\n < название класса >: AboutCourse\n" + e.Message);
+            }
+
+            return "";
         }
+
         /// <summary>
-        /// Получение затрат по времени (рассчет приблизеительный)
+        /// ""Получение затрат по времени (рассчет приблизеительный)
         /// </summary>
         /// <param name="doc">страница курса</param>
         /// <returns>Расчет по временных затрат</returns>
@@ -196,13 +239,18 @@ namespace Coursera
                 var list = m[m.Count - 2].QuerySelectorAll("span").ToList();
                 return list[0].TextContent;
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
-                return "None";
+                Console.WriteLine("Произошла ошибка при парсинге значения [Coursera][значение не найдено] [span]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n" + e.Message);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera] [span]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n" + e.Message);
+            }
+            return "";
         }
         /// <summary>
-        /// Получение формата курса
+        /// ""Получение формата курса
         /// </summary>
         /// <param name="doc">Страница курса</param>
         /// <returns>Формат</returns>
@@ -214,10 +262,15 @@ namespace Coursera
                 var key = m[m.Count - 5].QuerySelector("h4").TextContent;
                 return key;
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
-                return "None";
+                Console.WriteLine("Произошла ошибка при парсинге значения [Coursera][значение не найдено] [h4]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n" + e.Message);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera] [h4]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n" + e.Message);
+            }
+            return "";
         }
     }
 }

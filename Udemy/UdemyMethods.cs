@@ -1,97 +1,66 @@
 ﻿using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Udemy.APIser;
 
 namespace Udemy
 {
     public static class UdemyMethods
     {
-        private static string course_search = "https://www.udemy.com/courses/search/?q=";
+        private static string course_search = "https://www.udemy.com/api-2.0/courses/?page=1&search=";
+        private static string course_details = "https://www.udemy.com/api-2.0/courses/{0}?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class";
 
-        public static IHtmlDocument LoadPage(string path)
+        /// <summary>
+        /// ??Получение информации страницы по ссылке
+        /// </summary>
+        /// <param name="path">Ссылка на json файл</param>
+        /// <returns>Информация</returns>
+        private static string LoadPage(string path)
         {
             try
             {
                 WebClient webClient = new WebClient();
-                webClient.Headers.Add("User-Agent: Chrome/51.0.2704.103");
-                webClient.Headers.Add("Accept-Language", "ru-ru");
-                return new HtmlParser().ParseDocument(webClient.DownloadString(path));
+                webClient.Headers.Add("Accept: application/json, text/plain, */*");
+                webClient.Headers.Add("Authorization: Basic TVRFV2VOcjFPMVFsTGVTbGl3MDI0d3NsZFh3clNKYmt4V09pMjdVNTpBY1RYeE1QQUdORlBBd1hVMnA4YUprVTlQbDZiTEYwOFVIelRHRHhFdkFmRlNrRVliYmpteWE0OFN3Yjd6WnZVM3dKS0l5aTBVOVZMbjRzS3pTR0VZNWMweTk5UE5jN1NXd2R1eTdwbjZZOWdSNUxvejQxYVBBT0ZYNGNjUDg5ZA==");
+                webClient.Headers.Add("Content-Type: application/json;charset=utf-8");
+                return webClient.DownloadString(path);
             }
-            catch (WebException)
+            catch (WebException e)
             {
+                Console.WriteLine("При получении информации страницы произошла ошибка [Udemy] [LoadPage]\n"+ e.Message);
                 return null;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        /// <summary>
+        /// 0 Получение курсов Udemy по ключевому слову 
+        /// </summary>
+        /// <param name="keyword">Ключевому слову</param>
+        /// <returns>Список полученных курсов</returns>
         public static List<UdemyCourse> GetCourses(string keyword)
         {
-            List<UdemyCourse> listOfCourses = new List<UdemyCourse>();
-            var searchpage = LoadPage(course_search + keyword);
-
-            if (searchpage == null)
-                return listOfCourses;
-            List<string> hrefs = GetAttributeInfo(searchpage, "a", "udlite-custom-focus-visible course-card--container--3w8Zm course-card--large--1BVxY", 0);
-            List<string> course_names = GetValueInfo(searchpage, "div", "udlite-heading-sm udlite-focus-visible-target course-card--course-title--2f7tE");
-            List<string> ratings = GetValueInfo(searchpage, "div", "udlite-heading-sm star-rating--rating-number--3lVe8");
-            List<string> cover_photos = GetAttributeInfo(searchpage, "img", "course-card--course-image--2sjYP",3);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            for (int i = 0; i < ratings.Count; i++)
-                listOfCourses.Add(new UdemyCourse(course_names[i], double.Parse(ratings[i]), cover_photos[i], "https://www.udemy.com" + hrefs[i]));
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
-            return listOfCourses;
-        }
-
-        private static List<string> GetAttributeInfo(IHtmlDocument doc, string selector, string className, int attribute)
-        {
-            List<string> context = new List<string>();
+            List<UdemyCourse> list = new List<UdemyCourse>();
             try
             {
-                doc.QuerySelectorAll("div").Where(x => x.ClassName == "course-list--container--3zXPS").FirstOrDefault().QuerySelectorAll(selector).Where(x =>
-            x.ClassName != null && x.ClassName == className).ToList().ForEach(x =>
-            context.Add(x.Attributes[attribute].Value));
-                return context;
+                return JsonConvert.DeserializeObject<MainDataController>(LoadPage(course_search + keyword)).results;
             }
-            catch (NullReferenceException)
+            catch(Exception e)
             {
-                return context;
+                Console.WriteLine("При JSON десериализации произошла ошибка [Udemy] [GetCourses]\n" + e.Message);
+                return list;
             }
         }
 
-        private static List<string> GetValueInfo(IHtmlDocument doc, string selector, string className)
+        public static UdemyCourseDetails GetDetails(int id)
         {
-            try
-            {
-                List<string> data = new List<string>();
-                doc.QuerySelectorAll("div").Where(x => x.ClassName == "course-list--container--3zXPS").ToList()[0].QuerySelectorAll(selector).Where(x =>
-                x.ClassName != null && x.ClassName == className).ToList().ForEach(x =>
-                data.Add(x.TextContent));
-                return data;
-            }
-            catch (NullReferenceException)
-            {
-                return null;
-            }
+            var page = LoadPage($"https://www.udemy.com/api-2.0/courses/{id}?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class");
+            return JsonConvert.DeserializeObject<UdemyCourseDetails>(page);
         }
+
     }
 }

@@ -11,25 +11,27 @@ namespace Stepik
     public static class StepikMethods
     {
         private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page={0}&query={1}&type=course";
+
         /// <summary>
-        /// Курсы с первой страницы по запросу
+        /// 0 Курсы с первой страницы по запросу
         /// </summary>
         /// <param name="is_popular">По популярности?</param>
         /// <param name="keyword">Слово для поиска</param>
         /// <returns>Лист курсов (если курсов не было найдено - пустой список)</returns>
         public static List<StepikCourse> GetCourses(string keyword)
         {
-            MainDataController newPageOfData = JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search,1, keyword)));
-            if (newPageOfData.IsFound)
-                if (newPageOfData.metaresults.HasNext)
-                {
-                    var m = newPageOfData.search_results;
-                    m.AddRange(JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search, 2, keyword))).search_results);
-                    return m;
-                }
-            else
-                { return newPageOfData.search_results; }    
-            return null;
+            List<StepikCourse> list = new List<StepikCourse>();
+            try
+            {
+                MainDataController newPageOfData = JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search, 1, keyword)));
+                if (newPageOfData.IsFound)
+                    return newPageOfData.search_results;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Ошибка при десериализации JSON [Stepik] [GetCourses]\n" +e.Message);
+            }
+            return list;
         }
 
         /// <summary>
@@ -41,16 +43,19 @@ namespace Stepik
         {
             try
             {
+                WebClient webClient = new WebClient();
+                webClient.Headers.Add("Accept-Language", "en-us");
                 return new WebClient().DownloadString(url);
             }
-            catch (WebException)
+            catch (WebException e)
             {
+                Console.WriteLine("При получении информации страницы произошла ошибка![Stepik] [GetSource]\n" + e.Message);
                 return null;
             }
         }
 
         /// <summary>
-        /// Метод возвращающий детали о курсе
+        /// ?? Метод возвращающий детали о курсе
         /// </summary>
         /// <param name="link">ссылка на страницу для парсинга</param>
         /// <returns>Объект с соответсвующей информацией</returns>
@@ -60,8 +65,9 @@ namespace Stepik
             {
                 return JsonConvert.DeserializeObject<DetailsDataController>(GetSource(link))?.info[0];
             }
-            catch (ArgumentNullException)
+            catch (Exception e)
             {
+                Console.WriteLine("При десериализации произошла ошибка![Stepik] [GetDetails]\n" + e.Message);
                 return null;
             }
         }

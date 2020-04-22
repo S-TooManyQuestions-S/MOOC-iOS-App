@@ -4,10 +4,15 @@ using System.Text;
 
 namespace CourseLib.Types
 {
+    /// <summary>
+    /// Все изображения, связанные с курсом
+    /// </summary>
     public class Image
     {
-        public string CoverImage { get; }//обложка курса
-        public string LogoLink { get; }//логотип компании
+        //обложка курса
+        public string CoverImage { get; }
+        //логотип компании
+        public string LogoLink { get; }
         public Image(string coverlink, string logoLink)
         {
             CoverImage = coverlink;

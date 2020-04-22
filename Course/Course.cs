@@ -2,12 +2,19 @@
 
 namespace CourseLib
 {
+    /// <summary>
+    /// Курс и вся необходимая информация к нему
+    /// </summary>
     public class Course
     {
-        public string CourseName { get; } //название курса
-        public Rating CourseRating { get; } //рейтинг
-        public Image CourseImages { get; }//все ссылки на картинки
-        public CurrentInfo Info { get; }//метаданные по конкретному курсу
+        //название курса
+        public string CourseName { get; }
+        //рейтинг
+        public Rating CourseRating { get; }
+        //все ссылки на картинки
+        public Image CourseImages { get; }
+        //метаданные по конкретному курсу
+        public CurrentInfo Info { get; }
 
         public Course(string name, Rating rating, Image images, CurrentInfo info)
         {

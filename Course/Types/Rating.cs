@@ -4,9 +4,13 @@ using System.Text;
 
 namespace CourseLib.Types
 {
+    /// <summary>
+    /// Контейнер для рейтинга
+    /// </summary>
     public class Rating
     {
-        public double MyRating { get; } //преобразованный рейтинг
+        //преобразованный рейтинг (мой локальный рейтинг)
+        public double MyRating { get; } 
         public Rating(double localrating)
         {
             MyRating = localrating;
