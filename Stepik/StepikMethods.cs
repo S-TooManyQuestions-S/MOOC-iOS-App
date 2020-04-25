@@ -44,7 +44,7 @@ namespace Stepik
             try
             {
                 WebClient webClient = new WebClient();
-                webClient.Headers.Add("Accept-Language", "en-us");
+                webClient.Headers.Add("Accept-Language", "ru-RU");
                 return new WebClient().DownloadString(url);
             }
             catch (WebException e)

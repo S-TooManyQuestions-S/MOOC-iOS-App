@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Udemy;
 
 namespace MOOC_Server.MySettings
 {
@@ -21,6 +22,7 @@ namespace MOOC_Server.MySettings
                 List<Course> AllCourses = new List<Course>();
                 AllCourses.AddRange(StepikMethods.GetCourses(keyword));
                 AllCourses.AddRange(CourseraMethods.GetCourses(keyword));
+                AllCourses.AddRange(UdemyMethods.GetCourses(keyword));
                 return AllCourses;
             }
             catch(NullReferenceException e)
@@ -44,6 +46,12 @@ namespace MOOC_Server.MySettings
                     else if (link.Contains("coursera"))
                     {
                         CourseDetails details = CourseraMethods.GetDetails(link);
+                        MySQLMethods.InsertInSQL(details, link);
+                        return details;
+                    }
+                    else if(link.Contains("udemy")) //обработка через id
+                    {
+                        CourseDetails details = UdemyMethods.GetDetails(link);
                         MySQLMethods.InsertInSQL(details, link);
                         return details;
                     }

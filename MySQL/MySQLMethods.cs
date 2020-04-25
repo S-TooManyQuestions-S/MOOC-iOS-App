@@ -1,8 +1,14 @@
 ﻿using CourseLib;
+using Coursera;
 using MySql.Data.MySqlClient;
+using Stepik;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using Udemy;
 
 namespace MySQL
 {
@@ -22,34 +28,33 @@ namespace MySQL
         /// <returns>Дополнительная информация о курсе</returns>
         public static CourseDetails GetFromSQL(string link)
         {
-            List<string> data = new List<string>();
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(connStr))
-                {
-                    conn.Open();
-                    string sql = $"SELECT * FROM details WHERE CourseLink = '{link}'";
-                    using (MySqlCommand command = new MySqlCommand(sql, conn))
-                    {
-                        using (MySqlDataReader MyDataReader = command.ExecuteReader())
-                        {
-                            DataTable schemaTable = MyDataReader.GetSchemaTable();
-                            while (MyDataReader.Read())
-                            {
-                                for (var i = 0; i < MyDataReader.FieldCount; i++)
-                                {
-                                    data.Add(MyDataReader.GetString(i));
-                                }
-                            }
-                        }
-                    }
-                    conn.Close();
-                }
-                if (data.Count == 0)
-                    return null;
-                return new CourseDetails(data[1], data[2], data[3], data[4], data[5]);
+                MySqlConnection conn = new MySqlConnection(connStr));
+                
+                conn.Open();
+                string sqlDate = $"SELECT Date FROM datatable WHERE url = '{link}'";
+                MySqlCommand command = new MySqlCommand(sqlDate, conn);
+
+                DateTime creation = DateTime.Parse(command.ExecuteScalar().ToString());
+                
+                if ((DateTime.Now - creation).TotalDays >= 5)
+                    Update(link);
+
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+
+                
+
+                
+                string sqlSelect = $"SELECT course FROM datatable WHERE url = '{link}'";
+                command = new MySqlCommand(sqlSelect, conn);
+                byte[] data = (byte[])command.ExecuteScalar();
+                conn.Close();
+                return binaryFormatter.Deserialize()
+                
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine($"Произошла ошибка при получении значений из базы данных!\n{e.Message}");
                 return null;
@@ -57,28 +62,109 @@ namespace MySQL
         }
 
         /// <summary>
-        /// Метод добавляющий значение в базу данных
+        /// Помещает данные в базу данных
         /// </summary>
-        /// <param name="details">Детали для помещения в базу данных</param>
-        /// <param name="link">Ссылка на страницу курса (уникальный идентификатор)</param>
+        /// <param name="details">Данные</param>
+        /// <param name="link">Уникальный ключ (ссылка)</param>
         public static void InsertInSQL(CourseDetails details, string link)
         {
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(connStr))
+                //Если запись не существует
+                if (!Exist(link))
                 {
-                    conn.Open();
-                    string sql_registrUser = $"INSERT INTO details VALUES('{link}','{details.ShortDescriprion}','{details.LongDescription}','{details.TargetAudience}','{details.Format}','{details.WorkLoad}');";
-                    MySqlCommand comm_registr = new MySqlCommand(sql_registrUser, conn);
-                    comm_registr.ExecuteNonQuery();
-                    conn.Close();
+                    using (MySqlConnection conn = new MySqlConnection(connStr))
+                    {
+                        conn.Open();//открываем соединение
+
+                        byte[] binData = DataGrab(details);//сериализуем объект для записи
+
+                        string sqlCommand = $"INSERT INTO datatable VALUES (0,'{link}',?information,'{DateTime.Now:yyyy:mm:dd hh:mm:ss}');";//команда для MySql
+
+                        var command = new MySqlCommand(sqlCommand, conn);//инициализация команды
+
+                        command.Parameters.Add("?information", MySqlDbType.Blob).Value = binData;
+                        command.ExecuteNonQuery();//добавление информации в бд
+
+                        conn.Close();//закрываем соединение
+                    }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine($"Данные с идентификатором: {link} не были помещены в базу!\n{e.Message}");
             }
         }
-        
+
+        /// <summary>
+        /// Сериализация объекта в массив байтов
+        /// </summary>
+        /// <param name="details">объект (информация о курсе)</param>
+        /// <returns>Преобразованный в байтовый массив объект</returns>
+        private static byte[] DataGrab(CourseDetails details)
+        {
+            BinaryFormatter fb = new BinaryFormatter();
+            byte[] data;
+            //открываем поток для записи иниформации 
+            using (MemoryStream ms = new MemoryStream())
+            {
+                fb.Serialize(ms, details);
+                data = ms.ToArray();
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Проверяет существует ли строка с таким уникальным url в таблице
+        /// </summary>
+        /// <param name="link">уникальный url</param>
+        /// <returns></returns>
+        private static bool Exist(string link)
+        {
+            //команда для выбора значения из таблицы
+            var sqlCommand = $"SELECT EXISTS(SELECT url FROM datatable WHERE url = '{link}');";
+
+            var result = String.Empty;
+
+            //открываем соединение
+            using (MySqlConnection mySqlConnection = new MySqlConnection(connStr))
+            {
+                mySqlConnection.Open();
+                //инициализация команды
+                var command = new MySqlCommand(sqlCommand, mySqlConnection);
+
+                result = command.ExecuteScalar().ToString();
+            }
+            return result == "1";
+        }
+
+
+        private static void Update(string link)
+        {
+            CourseDetails details;
+            if (link.Contains("udemy"))
+                details = UdemyMethods.GetDetails(link);
+            else if (link.Contains("stepik"))
+                details = StepikMethods.GetDetails(link);
+            else details = CourseraMethods.GetDetails(link);
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();//открываем соединение
+
+                byte[] binData = DataGrab(details);//сериализуем объект для записи
+
+                string sqlCommand = $"UPDATE datatable SET course = ?information, Date = {DateTime.Now:yyyy:mm:dd hh:mm:ss}';";//команда для MySql
+
+                var command = new MySqlCommand(sqlCommand, conn);//инициализация команды
+
+                command.Parameters.Add("?information", MySqlDbType.Blob).Value = binData;
+                command.ExecuteNonQuery();//добавление информации в бд
+
+                conn.Close();//закрываем соединение
+            }
+        }
+
+
     }
 }

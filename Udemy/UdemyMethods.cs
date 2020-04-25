@@ -13,7 +13,7 @@ namespace Udemy
 {
     public static class UdemyMethods
     {
-        private static string course_search = "https://www.udemy.com/api-2.0/courses/?page=1&search=";
+        private static string course_search = "https://www.udemy.com/api-2.0/courses/?search=";
         private static string course_details = "https://www.udemy.com/api-2.0/courses/{0}?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class";
 
         /// <summary>
@@ -55,11 +55,25 @@ namespace Udemy
                 return list;
             }
         }
-
-        public static UdemyCourseDetails GetDetails(int id)
+        /// <summary>
+        /// Получение конкретной информации о курсе
+        /// </summary>
+        /// <param name="id">Айди курса на сайте Udemy</param>
+        /// <returns>Информация о Udemy курсе</returns>
+        /// https://www.udemy.com/api-2.0/courses/{id}?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class
+        public static UdemyCourseDetails GetDetails(string link)
         {
-            var page = LoadPage($"https://www.udemy.com/api-2.0/courses/{id}?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class");
-            return JsonConvert.DeserializeObject<UdemyCourseDetails>(page);
+            string page = LoadPage(link);
+            try
+            {
+                return JsonConvert.DeserializeObject<UdemyCourseDetails>(page);
+            }
+           catch(Exception e)
+            {
+                Console.WriteLine("При JSON десериализации произошла ошибка [Udemy] [GetCourses]\n"+e.Message);
+                return null;
+            }
+
         }
 
     }

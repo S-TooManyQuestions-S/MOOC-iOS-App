@@ -4,6 +4,7 @@ using System.Text;
 
 namespace CourseLib
 {
+    [Serializable]
     public class CourseDetails
     {
         //краткое описание (если доступно)

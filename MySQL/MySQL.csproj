@@ -9,7 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Coursera\Coursera.csproj" />
     <ProjectReference Include="..\Course\CourseLib.csproj" />
+    <ProjectReference Include="..\Stepik\Stepik.csproj" />
+    <ProjectReference Include="..\Udemy\Udemy.csproj" />
   </ItemGroup>
 
 </Project>
