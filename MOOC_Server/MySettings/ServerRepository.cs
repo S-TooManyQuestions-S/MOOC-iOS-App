@@ -23,6 +23,7 @@ namespace MOOC_Server.MySettings
                 AllCourses.AddRange(StepikMethods.GetCourses(keyword));
                 AllCourses.AddRange(CourseraMethods.GetCourses(keyword));
                 AllCourses.AddRange(UdemyMethods.GetCourses(keyword));
+                Console.WriteLine("111");
                 return AllCourses;
             }
             catch(NullReferenceException e)

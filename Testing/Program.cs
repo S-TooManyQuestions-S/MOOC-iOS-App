@@ -23,8 +23,9 @@ namespace Testing
                 var details = StepikMethods.GetDetails(item.Info.InformationPath);
                 MySQL.MySQLMethods.InsertInSQL(details,item.Info.);
             }*/
-            MySQL.MySQLMethods.GetFromSQL("https://www.udemy.com/api-2.0/courses/1298780?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class");
             
+            var details = MySQL.MySQLMethods.GetFromSQL("https://www.udemy.com/api-2.0/courses/1298780?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class");
+            Console.WriteLine(details.WorkLoad);
             //list.AddRange(UdemyMethods.GetCourses("python"));
             //list.AddRange(StepikMethods.GetCourses("Python"));
             /*foreach (var item in list)

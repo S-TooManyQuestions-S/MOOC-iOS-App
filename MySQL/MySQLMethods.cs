@@ -3,11 +3,8 @@ using Coursera;
 using MySql.Data.MySqlClient;
 using Stepik;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using Udemy;
 
 namespace MySQL
@@ -20,45 +17,54 @@ namespace MySQL
         //строка подключения к созданной локально базе данных
         private const string connStr = "server=localhost;user=root;database=course_details;password=Busytofuck098765;";
 
-        /// <summary>
-        /// ?? Метод позволяющий получить строку из базы данных
-        /// по ключевому значению (ссылке)
-        /// </summary>
-        /// <param name="link">Ключевое значение (ссылка)</param>
-        /// <returns>Дополнительная информация о курсе</returns>
+        
         public static CourseDetails GetFromSQL(string link)
         {
             try
             {
-                MySqlConnection conn = new MySqlConnection(connStr));
-                
-                conn.Open();
                 string sqlDate = $"SELECT Date FROM datatable WHERE url = '{link}'";
-                MySqlCommand command = new MySqlCommand(sqlDate, conn);
+                DateTime _dateOfCreation;
+                MySqlCommand command;
 
-                DateTime creation = DateTime.Parse(command.ExecuteScalar().ToString());
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    command = new MySqlCommand(sqlDate, conn);
+                    _dateOfCreation = DateTime.Parse(command.ExecuteScalar().ToString());
+                }
                 
-                if ((DateTime.Now - creation).TotalDays >= 5)
+                //если информация не обновлялась более чем 5 дней - происходит обновление данных
+                if ((DateTime.Now - _dateOfCreation).Days >= 5)
                     Update(link);
 
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
-
-                
-
-                
                 string sqlSelect = $"SELECT course FROM datatable WHERE url = '{link}'";
-                command = new MySqlCommand(sqlSelect, conn);
-                byte[] data = (byte[])command.ExecuteScalar();
-                conn.Close();
-                return binaryFormatter.Deserialize()
-                
+                byte[] data;//информация
 
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+                    command = new MySqlCommand(sqlSelect, conn);
+                    data = (byte[])command.ExecuteScalar();
+                }
+
+                CourseDetails details;
+                using(MemoryStream memoryStream = new MemoryStream(data))
+                {
+                    details = (CourseDetails)binaryFormatter.Deserialize(memoryStream);
+                }
+                return details;
             }
-            catch (Exception e)
+            catch (MySqlException e)
             {
                 Console.WriteLine($"Произошла ошибка при получении значений из базы данных!\n{e.Message}");
-                return null;
             }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Произошла непредвиденная ошибка при получении значений из базы данных!\n{e.Message}");
+            }
+            return null;
         }
 
         /// <summary>
@@ -141,6 +147,7 @@ namespace MySQL
 
         private static void Update(string link)
         {
+            //подумать как можно переделать
             CourseDetails details;
             if (link.Contains("udemy"))
                 details = UdemyMethods.GetDetails(link);
@@ -161,7 +168,6 @@ namespace MySQL
                 command.Parameters.Add("?information", MySqlDbType.Blob).Value = binData;
                 command.ExecuteNonQuery();//добавление информации в бд
 
-                conn.Close();//закрываем соединение
             }
         }
 

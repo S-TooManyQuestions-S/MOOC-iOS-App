@@ -13,7 +13,7 @@ namespace MOOC_Server.Controllers
     [ApiController]
     public class getCoursesController : ControllerBase
     {
-        //
+        //https://localhost:44317/getCourses?keyword=python
         // GET: api/getCourses
         public IServerRepository ServerItem {get;}
         public getCoursesController(IServerRepository item)
