@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Coursera
 {
+    [Serializable]
     public class CourseraCourseDetails : CourseDetails
     {
         public CourseraCourseDetails(string summary, string workload, string target_audience, string course_format, string description)

@@ -15,7 +15,7 @@ namespace MySQL
     public static class MySQLMethods
     {
         //строка подключения к созданной локально базе данных
-        private const string connStr = "server=localhost;user=root;database=course_details;password=Busytofuck098765;";
+        private const string connStr = "server=localhost;port=3306;user=root;database=data_base;password=password;";
 
         
         public static CourseDetails GetFromSQL(string link)
@@ -85,7 +85,7 @@ namespace MySQL
 
                         byte[] binData = DataGrab(details);//сериализуем объект для записи
 
-                        string sqlCommand = $"INSERT INTO datatable VALUES (0,'{link}',?information,'{DateTime.Now:yyyy:mm:dd hh:mm:ss}');";//команда для MySql
+                        string sqlCommand = $"INSERT INTO datatable VALUES (0,'{link}',?information,'{DateTime.Now:yyyy:MM:dd HH:mm:ss}');";//команда для MySql
 
                         var command = new MySqlCommand(sqlCommand, conn);//инициализация команды
 

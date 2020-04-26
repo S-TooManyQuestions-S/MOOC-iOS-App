@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Stepik
 {
+    [Serializable]
     public class StepikCourseDetails : CourseDetails
     {
         public StepikCourseDetails(string summary, string workload, string target_audience, string course_format, string description)
