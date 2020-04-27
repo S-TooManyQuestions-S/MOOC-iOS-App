@@ -1,5 +1,6 @@
 ﻿using CourseLib;
 using Coursera;
+using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using Stepik;
 using System;
@@ -16,8 +17,8 @@ namespace MySQL
     {
         //строка подключения к созданной локально базе данных
         private const string connStr = "server=localhost;port=3306;user=root;database=data_base;password=password;";
+       
 
-        
         public static CourseDetails GetFromSQL(string link)
         {
             try
@@ -56,15 +57,12 @@ namespace MySQL
                 }
                 return details;
             }
-            catch (MySqlException e)
-            {
-                Console.WriteLine($"Произошла ошибка при получении значений из базы данных!\n{e.Message}");
-            }
             catch(Exception e)
             {
-                Console.WriteLine($"Произошла непредвиденная ошибка при получении значений из базы данных!\n{e.Message}");
+                return null;
+                // Console.WriteLine($"Произошла непредвиденная ошибка при получении значений из базы данных!\n{e.Message}");
             }
-            return null;
+            
         }
 
         /// <summary>
@@ -72,12 +70,12 @@ namespace MySQL
         /// </summary>
         /// <param name="details">Данные</param>
         /// <param name="link">Уникальный ключ (ссылка)</param>
-        public static void InsertInSQL(CourseDetails details, string link)
+        public static bool InsertInSQL(CourseDetails details, string link)
         {
             try
             {
                 //Если запись не существует
-                if (!Exist(link))
+                //if (!Exist(link))
                 {
                     using (MySqlConnection conn = new MySqlConnection(connStr))
                     {
@@ -95,10 +93,12 @@ namespace MySQL
                         conn.Close();//закрываем соединение
                     }
                 }
+                return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Данные с идентификатором: {link} не были помещены в базу!\n{e.Message}");
+                //Console.WriteLine($"Данные с идентификатором: {link} не были помещены в базу!\n{e.Message}");
+                return false;
             }
         }
 

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using CourseLib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MOOC_Server.MySettings;
+using NLog;
 
 namespace MOOC_Server.Controllers
 {
@@ -16,10 +18,13 @@ namespace MOOC_Server.Controllers
         //https://localhost:44317/getCourses?keyword=python
         // GET: api/getCourses
         public IServerRepository ServerItem {get;}
+
         public getCoursesController(IServerRepository item)
        => ServerItem = item;
         [HttpGet("getCourses")]
+
         public List<Course> GetByKeyWord(string keyword)
-            => ServerItem.GetByKeyWord(keyword);
+        => ServerItem.GetByKeyWord(keyword);
+            
     }
 }

@@ -19,7 +19,6 @@ namespace MOOC_Server.Controllers
         public getDetailsController(IServerRepository item)
        => ServerItem = item;
 
-
         [HttpGet("getDetails")]
         public CourseDetails GetDetailsByCourse(string link)
             => ServerItem.GetDetailsByCourse(link);
