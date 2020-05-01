@@ -12,11 +12,11 @@ namespace CourseLib
         //более полное описание (если доступно)
         public string LongDescription { get; }
         //целевая аудитория (если доступно)
-        public string TargetAudience { get; } = "Будет интересно любому";
+        public string TargetAudience { get; }
         //формат курса (если доступно)
-        public string Format { get; } = "Онлайн курс";
+        public string Format { get; }
         //продолжительность выполнения курса (если доступно)
-        public string WorkLoad { get; } = "Свободный график (без ограничений)";
+        public string WorkLoad { get; } 
 
         public CourseDetails(string short_descr, string long_descr, string audience, string format, string time)
         {

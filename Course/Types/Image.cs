@@ -11,12 +11,9 @@ namespace CourseLib.Types
     {
         //обложка курса
         public string CoverImage { get; }
-        //логотип компании
-        public string LogoLink { get; }
-        public Image(string coverlink, string logoLink)
+        public Image(string coverlink)
         {
             CoverImage = coverlink;
-            LogoLink = logoLink;
         }
     }
 }

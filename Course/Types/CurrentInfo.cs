@@ -13,20 +13,23 @@ namespace CourseLib.Types
         public string CompanyName { get; }
         //айди внутри компании (может использоваться для поиска данных)
         public double CompanyId { get; }
-        //ссылка на конкретный курс (используется как внутренний уникальный 
         //идентификатор внутри базы данных)
-        public string InformationPath { get; }
+        public string APIpath { get; }
+        //ссылка на курс (для перехода пользователем)
+        public string CoursePath { get; }
         /// <summary>
         /// Стандартный конструктор
         /// </summary>
         /// <param name="company">Наименование компании</param>
         /// <param name="id">Айди</param>
-        /// <param name="informationPath">Ссылка на курс</param>
-        public CurrentInfo(string company, double id, string informationPath)
+        /// <param name="informationPath">Ссылка для парсинга</param>
+        /// <param name="coursePath">Cсылка на курс</param>
+        public CurrentInfo(string company, double id, string api, string coursePath)
         {
             CompanyId = id;
             CompanyName = company;
-            InformationPath = informationPath;
+            APIpath = api;
+            CoursePath = coursePath;
         }
     }
 }

@@ -60,7 +60,6 @@ namespace Udemy
         /// </summary>
         /// <param name="id">Айди курса на сайте Udemy</param>
         /// <returns>Информация о Udemy курсе</returns>
-        /// https://www.udemy.com/api-2.0/courses/{id}?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class
         public static UdemyCourseDetails GetDetails(string link)
         {
             string page = LoadPage(link);

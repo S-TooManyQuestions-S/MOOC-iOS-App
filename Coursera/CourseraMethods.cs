@@ -165,7 +165,7 @@ namespace Coursera
             {
                // Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n"+e.Message);
             }
-            return "Не требуется дополнительных знаний (No additional knowledge required)";
+            return "No additional knowledge required";
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Coursera
             {
                // Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera]\n < название класса >: max-text-width m-b-0\n" + e.Message);
             }
-            return "Недостаточно информации - посетите страницу курса! (Not enough information - visit the course page)";
+            return "Not enough information - visit the course page";
         }
         /// <summary>
         /// ""Получение описания курса
@@ -223,7 +223,7 @@ namespace Coursera
                 //Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera]\n < название класса >: AboutCourse\n" + e.Message);
             }
 
-            return "Посетите страницу курса, чтобы узнать больше! (visit the course page for more information)";
+            return "Not enough information - visit the course page";
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace Coursera
             {
                 //Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera] [span]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n" + e.Message);
             }
-            return "Собственный график (Your own schedule)";
+            return "Your own schedule";
         }
         /// <summary>
         /// ""Получение формата курса
@@ -270,7 +270,7 @@ namespace Coursera
             {
                 //Console.WriteLine("Произошла непредвиденная ошибка при парсинге значения [Coursera] [h4]\n < название класса >: _y1d9czk m-b-2 p-t-1s\n" + e.Message);
             }
-            return "Полностью онлайн курс (Fully online)";
+            return "Fully online";
         }
     }
 }
