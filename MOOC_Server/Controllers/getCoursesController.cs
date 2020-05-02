@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using CourseLib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,9 @@ namespace MOOC_Server.Controllers
         [HttpGet("getCourses")]
 
         public List<Course> GetByKeyWord(string keyword)
-        => ServerItem.GetByKeyWord(keyword);
+        => ServerItem.GetByKeyWord(HttpUtility.UrlEncode(keyword));
+
+       
             
     }
 }

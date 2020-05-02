@@ -18,7 +18,7 @@ namespace Udemy
         {
             HtmlParser domparser = new HtmlParser();
             var document = domparser.ParseDocument($"<html> {description} </html>");
-            return document.QuerySelector("html").TextContent.Replace("\n", "");
+            return document.QuerySelector("html").TextContent.Replace("\n", "").Replace("&nbsp","");
         }
         private static string GetItem(Meta data)
         {

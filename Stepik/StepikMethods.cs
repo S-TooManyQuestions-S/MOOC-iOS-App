@@ -35,11 +35,11 @@ namespace Stepik
         }
 
         /// <summary>
-        /// Получает страницу по ссылке
+        /// Получает страницу по ссылке 
         /// </summary>
         /// <param name="url">Ссылка на страницу</param>
         /// <returns>Строка с информацией</returns>
-        private static string GetSource(string url)
+        internal static string GetSource(string url)
         {
             try
             {

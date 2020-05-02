@@ -26,7 +26,7 @@ namespace Coursera
                 string info;
                 using (WebClient webClient = new WebClient())
                 {
-                    webClient.Headers.Add("Accept-Language", "en-us");
+                    webClient.Headers.Add("Accept-Language", "ru-RU");
                     info = webClient.DownloadString(path);
                 }
                 return new HtmlParser().ParseDocument(info);

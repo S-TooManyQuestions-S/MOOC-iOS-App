@@ -11,8 +11,6 @@ namespace CourseLib.Types
     {
         //название компании
         public string CompanyName { get; }
-        //айди внутри компании (может использоваться для поиска данных)
-        public double CompanyId { get; }
         //идентификатор внутри базы данных)
         public string APIpath { get; }
         //ссылка на курс (для перехода пользователем)
@@ -24,9 +22,8 @@ namespace CourseLib.Types
         /// <param name="id">Айди</param>
         /// <param name="informationPath">Ссылка для парсинга</param>
         /// <param name="coursePath">Cсылка на курс</param>
-        public CurrentInfo(string company, double id, string api, string coursePath)
+        public CurrentInfo(string company, string api, string coursePath)
         {
-            CompanyId = id;
             CompanyName = company;
             APIpath = api;
             CoursePath = coursePath;
