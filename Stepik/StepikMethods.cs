@@ -3,14 +3,17 @@ using Newtonsoft.Json;
 using Stepik.APIser;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Stepik
 {
     public static class StepikMethods
     {
         private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page={0}&query={1}&type=course";
+        private static string rating = "https://stepik.org/api/course-review-summaries?course=";
 
         /// <summary>
         /// 0 Курсы с первой страницы по запросу
@@ -70,6 +73,24 @@ namespace Stepik
                 Console.WriteLine("При десериализации произошла ошибка![Stepik] [GetDetails]\n" + e.Message);
                 return null;
             }
+        }
+       
+        /// <summary>
+        /// Получение рейтинга курса 
+        /// </summary>
+        /// <param name="id">Айди курса на платформе</param>
+        /// <returns></returns>
+       public static double GetStepikRating(double id)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<RatingController>(GetSource(rating + id)).array[0].average;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Ошибка при десериализации JSON [Stepik-Rating] [GetCourses]\n" + e.Message);
+            }
+            return 0;
         }
     }
 }
