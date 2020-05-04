@@ -1,35 +1,36 @@
-﻿using CourseLib;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Stepik.APIser;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
-using System.Text;
 
 namespace Stepik
 {
     public static class StepikMethods
     {
-        private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page={0}&query={1}&type=course";
-
-        /// <summary>
-        /// 0 Курсы с первой страницы по запросу
-        /// </summary>
-        /// <param name="is_popular">По популярности?</param>
-        /// <param name="keyword">Слово для поиска</param>
-        /// <returns>Лист курсов (если курсов не было найдено - пустой список)</returns>
+        private static string course_search = @"https://stepik.org/api/search-results?is_popular=true&is_public=true&page={0}&query={1}&type=course";
+        
         public static List<StepikCourse> GetCourses(string keyword)
         {
+            string path = "https://stepik.org/api/courses?";
             List<StepikCourse> list = new List<StepikCourse>();
             try
             {
-                MainDataController newPageOfData = JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search, 1, keyword)));
-                if (newPageOfData.IsFound)
-                    return newPageOfData.search_results;
+                var results = JsonConvert.DeserializeObject<MainDataController>(GetSource(string.Format(course_search,1,keyword)))?.search_results ?? new List<StepikCourse>();
+                results.ForEach(x =>
+                {
+                    path += $"ids[]={x.id}&";
+                });
+
+                var array = JsonConvert.DeserializeObject<bypath>(GetSource(path)).co;
+
+
             }
             catch (Exception e)
             {
-                Console.WriteLine("Ошибка при десериализации JSON [Stepik] [GetCourses]\n" +e.Message);
+                Console.WriteLine("Ошибка при десериализации JSON [Stepik] [GetCourses]\n" + e.Message);
             }
             return list;
         }
@@ -71,5 +72,18 @@ namespace Stepik
                 return null;
             }
         }
+
+
+    }
+    public class SummaryId
+    {
+        [JsonProperty("review_summary")]
+        public string id { get; set; }
+    }
+
+    public class bypath
+    {
+        [JsonProperty("courses")]
+        public List<SummaryId> co { get; set; }
     }
 }
