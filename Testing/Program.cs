@@ -56,19 +56,15 @@ namespace Testing
                      Console.WriteLine("--------------------------------------------------");
                  }*/
 
-            /*
-            
+            /*var stopwatch = new Stopwatch();
+            stopwatch.Start();
             Console.WriteLine(StepikCourse.GetRating(list[0].Info.CoursePath).Contains("course-promo-summary__average"));
           Console.WriteLine((new HtmlParser().ParseDocument(StepikCourse.GetRating(list[0].Info.CoursePath)).QuerySelector("span[class='course-promo-summary__average']").TextContent));
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
             Console.WriteLine(Udemy.UdemyMethods.LoadPage(@"https://www.udemy.com/api-2.0/courses/258316?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class ")); */
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
             var list = StepikMethods.GetCourses("c%23");
-            stopwatch.Stop();
-            Console.WriteLine(stopwatch.Elapsed);
-            Console.WriteLine(list[0].CourseRating.MyRating);
+            Console.WriteLine(list[0].CourseName);
         }
     }
 }
