@@ -34,7 +34,7 @@ namespace Stepik
                 List<string> titles = new List<string>();//наименование курса
                 List<string> covers = new List<string>();//обложка курса
 
-                for (int i = 0; i >= 0; i++)
+                for (int i = 0; i <=9; i++)
                 {
                     string course = jObject.SelectToken($"search-results[{i}].course")?.ToString();
                     if (string.IsNullOrEmpty(course))
@@ -126,7 +126,7 @@ namespace Stepik
                 JObject jObject = JObject.Parse(GetSource(link));
 
                 string path = "https://stepik.org/api/course-review-summaries?";
-                for (int i = 0; i >= 0; i++)
+                for (int i = 0; i <=9; i++)
                 {
                     //достаем id для получения рейтинга
                     string review = jObject.SelectToken($"courses[{i}].review_summary")?.ToString();
@@ -140,7 +140,7 @@ namespace Stepik
                 jObject = JObject.Parse(GetSource(path));
 
                 List<double> ratings = new List<double>();
-                for (int i = 0; i >= 0; i++)
+                for (int i = 0; i <= 9; i++)
                 {//достаем значение самого наконец-то рейтинга
                     string review = jObject.SelectToken($"course-review-summaries[{i}].average")?.ToString();
                     if (string.IsNullOrEmpty(review))
@@ -152,8 +152,9 @@ namespace Stepik
             catch (Exception e)
             {
                 Console.WriteLine("Ошибка при при получении рейтинга JSON [Stepik-Rating] [GetCourses]\n" + e.Message);
+                return null;
             }
-            return null;
+           
         }
     }
 }

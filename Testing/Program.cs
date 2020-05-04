@@ -63,18 +63,29 @@ namespace Testing
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
             Console.WriteLine(Udemy.UdemyMethods.LoadPage(@"https://www.udemy.com/api-2.0/courses/258316?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class ")); */
-          /*var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var list = StepikMethods.GetCourses("Python");
-            stopwatch.Stop();
-            Console.WriteLine(stopwatch.Elapsed);
+           /* var stopwatch = new Stopwatch();
+              stopwatch.Start();
+              var list = CourseraMethods.GetCourses("Python" 
+                );
+              stopwatch.Stop();
+              Console.WriteLine(stopwatch.Elapsed);
             foreach (var item in list)
+            {
+
                 Console.WriteLine(item.CourseRating.MyRating);
-            stopwatch.Restart();
-            var m =StepikMethods.GetDetails(list[0].Info.APIpath);
-            stopwatch.Stop();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
-            Console.WriteLine(m.LongDescription);*/
+                Console.WriteLine(item.CourseName);
+                Console.WriteLine(item.CourseImages.CoverImage);
+                var m = CourseraMethods.GetDetails(item.Info.APIpath);
+                Console.WriteLine(m.Format);
+                Console.WriteLine(m.LongDescription);
+                Console.WriteLine(m.ShortDescriprion);
+                Console.WriteLine(m.TargetAudience);
+                Console.WriteLine(m.WorkLoad);
+                Console.WriteLine("------------------------------------------");
+
+            }*/
+
+            
         }
     }
 }
