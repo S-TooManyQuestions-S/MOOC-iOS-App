@@ -15,17 +15,15 @@ namespace Udemy
         {}
        
         private static string DescriptionFix(string description)
-        {
-            HtmlParser domparser = new HtmlParser();
-            var document = domparser.ParseDocument($"<html> {description} </html>");
-            return document.QuerySelector("html").TextContent.Replace("\n", "").Replace("&nbsp","");
-        }
+        => new HtmlParser().ParseDocument($"<html> {description} </html>")
+            .QuerySelector("html")
+            .TextContent
+            .Replace("\n", "")
+            .Replace("&nbsp", "");
+           
         private static string GetItem(Meta data)
-        {
-            if (data == null || data.items == null)
-                return "No additional knowledge required";
-            return data.items[data.items.Count-1];
-        }
+       => data?.items?[data.items.Count-1] ?? "No additional knowledge required";
+        
     }
 
     public class Meta

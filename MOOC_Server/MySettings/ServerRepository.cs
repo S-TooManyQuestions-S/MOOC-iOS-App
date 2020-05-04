@@ -31,26 +31,16 @@ namespace MOOC_Server.MySettings
             List<Course> AllCourses = new List<Course>();
             try
             {
+                timer.Start();
+                Task.WhenAll(new List<Task>()
                 {
-                    timer.Start();
-                    AllCourses.AddRange(StepikMethods.GetCourses(keyword));
-                    timer.Stop();
-                    logger.Info($"[Result:SUCCESS][Process:Parsing][Platform:Stepik]  [Elapsed Time:{timer.Elapsed.TotalMilliseconds}]");
-                }
-                timer.Reset();
-                {
-                    timer.Start();
-                    AllCourses.AddRange(CourseraMethods.GetCourses(keyword));
-                    timer.Stop();
-                    logger.Info($"[Result:SUCCESS][Process:Parsing][Platform:Coursera][Elapsed Time:{timer.Elapsed.TotalMilliseconds}]");
-                }
-                timer.Reset();
-                {
-                    timer.Start();
-                    AllCourses.AddRange(UdemyMethods.GetCourses(keyword));
-                    timer.Stop();
-                    logger.Info($"[Result:SUCCESS][Process:Parsing][Platform:Udemy]   [Elapsed Time:{timer.Elapsed.TotalMilliseconds}]");
-                }
+                    Task.Run(() => AllCourses.AddRange(StepikMethods.GetCourses(keyword))),
+                    Task.Run(() => AllCourses.AddRange(CourseraMethods.GetCourses(keyword))),
+                    Task.Run(() => AllCourses.AddRange(UdemyMethods.GetCourses(keyword)))
+                }).Wait();
+                timer.Stop();
+                logger.Info($"[Result:SUCCESS][Process:Parsing]  [Elapsed Time:{timer.Elapsed.TotalMilliseconds}]");
+               
             }
             catch (Exception e)
             {
@@ -100,7 +90,7 @@ namespace MOOC_Server.MySettings
                         logger.Info($"[Result: SUCCESS][Process: GetDetails][Coursera][URL: {link}][Elapsed Time: {timer.ElapsedMilliseconds}]");
                     }
                 }
-                else if (link.Contains("udemy")) 
+                else if (link.Contains("udemy"))
                 {
                     {
                         timer.Start();

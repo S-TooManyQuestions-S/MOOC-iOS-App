@@ -95,9 +95,8 @@ namespace MySQL
                 }
                 return true;
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                //Console.WriteLine($"Данные с идентификатором: {link} не были помещены в базу!\n{e.Message}");
                 return false;
             }
         }
@@ -125,7 +124,7 @@ namespace MySQL
         /// </summary>
         /// <param name="link">уникальный url</param>
         /// <returns></returns>
-        private static bool Exist(string link)
+        /*private static bool Exist(string link)
         {
             //команда для выбора значения из таблицы
             var sqlCommand = $"SELECT EXISTS(SELECT url FROM datatable WHERE url = '{link}');";
@@ -142,7 +141,7 @@ namespace MySQL
                 result = command.ExecuteScalar().ToString();
             }
             return result == "1";
-        }
+        }*/
 
 
         private static void Update(string link)

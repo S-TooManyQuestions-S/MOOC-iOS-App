@@ -13,7 +13,7 @@ namespace Udemy
 {
     public static class UdemyMethods
     {
-        private static string course_search = "https://www.udemy.com/api-2.0/courses/?search=";
+        private static string course_search = "https://www.udemy.com/api-2.0/courses/?page_size=25&search=";
 
         /// <summary>
         /// ??Получение информации страницы по ссылке

@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Udemy;
 
 namespace Testing
@@ -63,29 +65,41 @@ namespace Testing
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
             Console.WriteLine(Udemy.UdemyMethods.LoadPage(@"https://www.udemy.com/api-2.0/courses/258316?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class ")); */
-           /* var stopwatch = new Stopwatch();
-              stopwatch.Start();
-              var list = CourseraMethods.GetCourses("Python" 
-                );
-              stopwatch.Stop();
-              Console.WriteLine(stopwatch.Elapsed);
-            foreach (var item in list)
-            {
+            /*
+                var list = CourseraMethods.GetCourses("Python" 
+                  );
+                stopwatch.Stop();
+                Console.WriteLine(stopwatch.Elapsed);
+              foreach (var item in list)
+              {
 
-                Console.WriteLine(item.CourseRating.MyRating);
-                Console.WriteLine(item.CourseName);
-                Console.WriteLine(item.CourseImages.CoverImage);
-                var m = CourseraMethods.GetDetails(item.Info.APIpath);
-                Console.WriteLine(m.Format);
-                Console.WriteLine(m.LongDescription);
-                Console.WriteLine(m.ShortDescriprion);
-                Console.WriteLine(m.TargetAudience);
-                Console.WriteLine(m.WorkLoad);
-                Console.WriteLine("------------------------------------------");
+                  Console.WriteLine(item.CourseRating.MyRating);
+                  Console.WriteLine(item.CourseName);
+                  Console.WriteLine(item.CourseImages.CoverImage);
+                  var m = CourseraMethods.GetDetails(item.Info.APIpath);
+                  Console.WriteLine(m.Format);
+                  Console.WriteLine(m.LongDescription);
+                  Console.WriteLine(m.ShortDescriprion);
+                  Console.WriteLine(m.TargetAudience);
+                  Console.WriteLine(m.WorkLoad);
+                  Console.WriteLine("------------------------------------------");
 
-            }*/
+              }*/
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            List<Course> AllCourses = new List<Course>();
+            string keyword = "Python";
+            var tasks = new List<Task>();
+            tasks.Add(Task.Run(() => AllCourses.AddRange(StepikMethods.GetCourses(keyword))));
+            tasks.Add(Task.Run(() => AllCourses.AddRange(CourseraMethods.GetCourses(keyword))));
+            tasks.Add(Task.Run(() => AllCourses.AddRange(UdemyMethods.GetCourses(keyword))));
+            Task t = Task.WhenAll(tasks);
 
-            
+            t.Wait();
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            Console.WriteLine(AllCourses[0].CourseImages.CoverImage);
+
         }
     }
 }
