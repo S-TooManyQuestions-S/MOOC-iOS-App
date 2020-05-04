@@ -15,6 +15,11 @@ namespace Stepik
                   string.IsNullOrEmpty(workload) ? "Свободный график" : workload)
         { }
         
+        /// <summary>
+        /// Очищаем описание от ненужного хлама
+        /// </summary>
+        /// <param name="description">Описание</param>
+        /// <returns>Описание без тегов и \n</returns>
         private static string DescriptionFix(string description)
         {
             HtmlParser domparser = new HtmlParser();

@@ -1,32 +1,67 @@
-﻿using Newtonsoft.Json;
+﻿using CourseLib;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Stepik.APIser;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Stepik
 {
     public static class StepikMethods
     {
-        private static string course_search = @"https://stepik.org/api/search-results?is_popular=true&is_public=true&page={0}&query={1}&type=course";
-        
+        private static string course_search = "https://stepik.org/api/search-results?is_popular=true&is_public=true&page={0}&query={1}&type=course";
+
+        /// <summary>
+        /// 0 Курсы с первой страницы по запросу
+        /// </summary>
+        /// <param name="is_popular">По популярности?</param>
+        /// <param name="keyword">Слово для поиска</param>
+        /// <returns>Лист курсов (если курсов не было найдено - пустой список)</returns>
         public static List<StepikCourse> GetCourses(string keyword)
         {
-            string path = "https://stepik.org/api/courses?";
             List<StepikCourse> list = new List<StepikCourse>();
             try
             {
-                var results = JsonConvert.DeserializeObject<MainDataController>(GetSource(string.Format(course_search,1,keyword)))?.search_results ?? new List<StepikCourse>();
-                results.ForEach(x =>
+                //+ 3 секунды к ожиданию
+                // MainDataController newPageOfData = JsonConvert.DeserializeObject<MainDataController>(GetSource(String.Format(course_search, 1, keyword)));
+
+                JObject jObject = JObject.Parse(GetSource(String.Format(course_search, 1, keyword)));
+                List<double> courses = new List<double>();//айди курса
+                List<string> titles = new List<string>();//наименование курса
+                List<string> covers = new List<string>();//обложка курса
+
+                for (int i = 0; i >= 0; i++)
                 {
-                    path += $"ids[]={x.id}&";
+                    string course = jObject.SelectToken($"search-results[{i}].course")?.ToString();
+                    if (string.IsNullOrEmpty(course))
+                        break;
+                    else
+                        courses.Add(double.Parse(course));
+
+                    titles.Add(jObject.SelectToken($"search-results[{i}].course_title").ToString());
+                    covers.Add(jObject.SelectToken($"search-results[{i}].course_cover").ToString());
+                }
+
+                if (courses.Count == 0)//если список пуст - дальше идти смысла нет
+                    return list;
+
+                //ссылка для получения id для запроса для рейтинга
+                string requestPath = "https://stepik.org/api/courses?";
+                //формирование ссылки
+                courses.ForEach(x =>
+                {
+                    requestPath += $"ids[]={x}&";
                 });
-
-                var array = JsonConvert.DeserializeObject<bypath>(GetSource(path)).co;
-
-
+                //получение рейтингов по списку
+                List<double> ratings = GetStepikRating(requestPath);
+                //формирование объектов типа StepikCourse
+                for (int i = 0; i < courses.Count; i++)
+                    list.Add(new StepikCourse(courses[i], titles[i], covers[i], ratings[i]));
+                return list;
             }
             catch (Exception e)
             {
@@ -64,7 +99,13 @@ namespace Stepik
         {
             try
             {
-                return JsonConvert.DeserializeObject<DetailsDataController>(GetSource(link))?.info[0];
+                JObject jObject = JObject.Parse(GetSource(link));
+                var summary =jObject.SelectToken("courses[0].summary")?.ToString() ?? "";
+                var workload = jObject.SelectToken("courses[0].workload")?.ToString() ?? "";
+                var target_audience = jObject.SelectToken("courses[0].target_audience")?.ToString() ?? "";
+                var course_format = jObject.SelectToken("courses[0].course_format")?.ToString() ?? "";
+                var description = jObject.SelectToken("courses[0].description")?.ToString() ?? "";
+                return new StepikCourseDetails(summary, workload, target_audience, course_format, description); 
             }
             catch (Exception e)
             {
@@ -73,17 +114,46 @@ namespace Stepik
             }
         }
 
+        /// <summary>
+        /// Получение листа рейтингов курсов Stepik
+        /// </summary>
+        /// <param name="link">Ссылка на сами review</param>
+        /// <returns>Лист курсов друг заь другом</returns>
+        public static List<double> GetStepikRating(string link)
+        {
+            try
+            {
+                JObject jObject = JObject.Parse(GetSource(link));
 
-    }
-    public class SummaryId
-    {
-        [JsonProperty("review_summary")]
-        public string id { get; set; }
-    }
+                string path = "https://stepik.org/api/course-review-summaries?";
+                for (int i = 0; i >= 0; i++)
+                {
+                    //достаем id для получения рейтинга
+                    string review = jObject.SelectToken($"courses[{i}].review_summary")?.ToString();
+                    //если больше получить не можем - прекращаем цикл
+                    if (string.IsNullOrEmpty(review))
+                        break;
+                    //генерируем саму ссылку
+                    path += $"ids[]={review}&";
+                }
+                //делаем запрос по ссылке
+                jObject = JObject.Parse(GetSource(path));
 
-    public class bypath
-    {
-        [JsonProperty("courses")]
-        public List<SummaryId> co { get; set; }
+                List<double> ratings = new List<double>();
+                for (int i = 0; i >= 0; i++)
+                {//достаем значение самого наконец-то рейтинга
+                    string review = jObject.SelectToken($"course-review-summaries[{i}].average")?.ToString();
+                    if (string.IsNullOrEmpty(review))
+                        break;
+                    ratings.Add(double.Parse(review));//добавляем его в наш лист
+                }
+                return ratings;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Ошибка при при получении рейтинга JSON [Stepik-Rating] [GetCourses]\n" + e.Message);
+            }
+            return null;
+        }
     }
 }

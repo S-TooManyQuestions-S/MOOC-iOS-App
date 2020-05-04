@@ -19,7 +19,6 @@ namespace CourseLib.Types
         /// Стандартный конструктор
         /// </summary>
         /// <param name="company">Наименование компании</param>
-        /// <param name="id">Айди</param>
         /// <param name="informationPath">Ссылка для парсинга</param>
         /// <param name="coursePath">Cсылка на курс</param>
         public CurrentInfo(string company, string api, string coursePath)

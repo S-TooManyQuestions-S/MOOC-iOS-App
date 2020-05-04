@@ -31,7 +31,6 @@ namespace MOOC_Server.MySettings
             List<Course> AllCourses = new List<Course>();
             try
             {
-                //добавление резульатов поиска курсов с платформы Stepik.org
                 {
                     timer.Start();
                     AllCourses.AddRange(StepikMethods.GetCourses(keyword));
@@ -101,7 +100,7 @@ namespace MOOC_Server.MySettings
                         logger.Info($"[Result: SUCCESS][Process: GetDetails][Coursera][URL: {link}][Elapsed Time: {timer.ElapsedMilliseconds}]");
                     }
                 }
-                else if (link.Contains("udemy")) //обработка через id
+                else if (link.Contains("udemy")) 
                 {
                     {
                         timer.Start();

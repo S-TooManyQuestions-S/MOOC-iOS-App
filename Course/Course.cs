@@ -10,13 +10,13 @@ namespace CourseLib
         //название курса
         public string CourseName { get; }
         //рейтинг
-        public  double  CourseRating { get; set; }//пофиксить потом
+        public Rating CourseRating { get; }
         //все ссылки на картинки
         public Image CourseImages { get; }
         //метаданные по конкретному курсу
         public CurrentInfo Info { get; }
 
-        public Course(string name, double rating, Image images, CurrentInfo info)
+        public Course(string name, Rating rating, Image images, CurrentInfo info)
         {
             CourseName = name;
             CourseRating = rating;

@@ -14,7 +14,6 @@ namespace Udemy
     public static class UdemyMethods
     {
         private static string course_search = "https://www.udemy.com/api-2.0/courses/?search=";
-        private static string course_details = "https://www.udemy.com/api-2.0/courses/{0}?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class";
 
         /// <summary>
         /// ??Получение информации страницы по ссылке
