@@ -28,7 +28,7 @@ namespace Udemy
                 webClient.Headers.Add("Accept: application/json, text/plain, */*");
                 webClient.Headers.Add("Authorization: Basic TVRFV2VOcjFPMVFsTGVTbGl3MDI0d3NsZFh3clNKYmt4V09pMjdVNTpBY1RYeE1QQUdORlBBd1hVMnA4YUprVTlQbDZiTEYwOFVIelRHRHhFdkFmRlNrRVliYmpteWE0OFN3Yjd6WnZVM3dKS0l5aTBVOVZMbjRzS3pTR0VZNWMweTk5UE5jN1NXd2R1eTdwbjZZOWdSNUxvejQxYVBBT0ZYNGNjUDg5ZA==");
                 webClient.Headers.Add("Content-Type: application/json;charset=utf-8");
-                webClient.Headers.Add("Accept-Language: ru");
+                webClient.Headers.Add("Accept-Language: ru-RU");
                 return webClient.DownloadString(path);
             }
             catch (WebException e)

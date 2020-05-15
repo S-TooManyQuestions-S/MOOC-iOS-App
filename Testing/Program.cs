@@ -65,11 +65,10 @@ namespace Testing
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
             Console.WriteLine(Udemy.UdemyMethods.LoadPage(@"https://www.udemy.com/api-2.0/courses/258316?fields%5Bcourse%5D=description,headline,content_info,requirements_data,_class ")); */
-            /*
-                var list = CourseraMethods.GetCourses("Python" 
+            
+            /*    var list = UdemyMethods.GetCourses("Python" 
                   );
-                stopwatch.Stop();
-                Console.WriteLine(stopwatch.Elapsed);
+                
               foreach (var item in list)
               {
 
@@ -85,7 +84,7 @@ namespace Testing
                   Console.WriteLine("------------------------------------------");
 
               }*/
-            var stopwatch = new Stopwatch();
+            /*var stopwatch = new Stopwatch();
             stopwatch.Start();
             List<Course> AllCourses = new List<Course>();
             string keyword = "Python";
@@ -98,7 +97,7 @@ namespace Testing
             t.Wait();
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
-            Console.WriteLine(AllCourses[0].CourseImages.CoverImage);
+            Console.WriteLine(AllCourses[0].CourseImages.CoverImage);*/
 
         }
     }

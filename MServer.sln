@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Udemy", "Udemy\Udemy.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySQL", "MySQL\MySQL.csproj", "{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MOOC", "..\MOOC-1\MOOC\MOOC.csproj", "{E121D549-3A51-4AD6-9B5A-6C904593FBBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,16 @@ Global
 		{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}.Release|iPhone.Build.0 = Release|Any CPU
 		{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{E6F76B7E-36C2-4FA2-BE8C-CA575998C59A}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|Any CPU.ActiveCfg = Debug|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhone.Build.0 = Debug|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhone.ActiveCfg = Release|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhone.Build.0 = Release|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
