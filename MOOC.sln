@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MOOC", "MOOC\MOOC.csproj", "{E121D549-3A51-4AD6-9B5A-6C904593FBBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|iPhone.Build.0 = Debug|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhone.ActiveCfg = Release|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|iPhone.Build.0 = Release|iPhone
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
+		{E121D549-3A51-4AD6-9B5A-6C904593FBBD}.Release|Any CPU.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+EndGlobal
