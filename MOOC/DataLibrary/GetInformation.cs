@@ -43,8 +43,8 @@ namespace MOOC.DataLibrary
         static GetInformation()
         => important = JsonMethods.JsonReader();
 
-        
-        //попудярное
+        public static List<Course> courses { get; set; }
+        //популярное
         public static List<Course> popular { get; set; }
 
         //получаем список избранного из нашего файла
