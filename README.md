@@ -1,5 +1,4 @@
 # MOOC-iOS-App
-<<<<<<< HEAD
 >Where self-education begins..
 
 ## Introduction
@@ -52,9 +51,5 @@ only on russian
     * Open MOOC.sln
     * Build project (mode: Release)
 ***
-## Demonstration
-![](video/demonstration.mov)
 >The journey is the reward (c) Steve Jobs
-=======
-Where self-education begins..
->>>>>>> de66e1ab3b9b6c458955591cd2c6b9f9d462a05e
+
