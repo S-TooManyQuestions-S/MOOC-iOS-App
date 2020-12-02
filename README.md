@@ -3,7 +3,7 @@
 
 ## Introduction
 My first project as a first-year student of the FCS HSE. Project contains two parts: 
-* Server (Deployed on Linux, Unbuntu 18.04)
+* Server (Deployed on Linux, Ubuntu 18.04)
 * Client (Xamarin.IOS project)
 
 The connection between server and client is implemented via .Net Core Web Api. Server is rented on the [platform](ruvds.com) until 26.05.2020
